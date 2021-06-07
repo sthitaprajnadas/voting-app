@@ -80,3 +80,47 @@ For an orientation, see this [presentation](http://bit.ly/voting-app-with-docker
 
 The Voting App is open source and free for any use in compliance with the terms of the
 [MIT License](https://github.com/subfuzion/voting-app/blob/master/LICENSE).
+
+
+
+
+# Deploying in fargate using Amazon Linux (https://medium.com/containers-on-aws/deploy-the-voting-app-to-aws-ecs-with-fargate-cb75f226408f)
+install docker (sudo yum update -y  ,  sudo amazon-linux-extras install docker , sudo service docker start , sudo usermod -a -G docker ec2-user , docker info)
+aws configure
+$(aws ecr get-login --no-include-email --region us-east-1)
+
+[ec2-user@ip-172-31-87-225 worker]$ aws ecr create-repository \
+> --repository-name worker \
+> --image-scanning-configuration scanOnPush=true \
+> --region us-east-1
+> 
+{
+    "repository": {
+        "repositoryUri": "437637487786.dkr.ecr.us-east-1.amazonaws.com/worker",
+        "imageScanningConfiguration": {
+            "scanOnPush": true
+        },
+        "encryptionConfiguration": {
+            "encryptionType": "AES256"
+        },
+        "registryId": "437637487786",
+        "imageTagMutability": "MUTABLE",
+        "repositoryArn": "arn:aws:ecr:us-east-1:437637487786:repository/worker",
+        "repositoryName": "worker",
+        "createdAt": 1623084454.0
+    }
+}
+
+    
+docker tag worker:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/worker:latest
+
+## push worker image
+** Change node:9 to node:10.6 in Dockerfile
+
+
+
+$ cd $VOTEAPP_ROOT/src/worker
+$ docker build -t worker .
+$ docker tag worker:latest 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
+$ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
+
