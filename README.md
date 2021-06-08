@@ -119,3 +119,9 @@ $ docker push 654814900965.dkr.ecr.us-east-1.amazonaws.com/voteapi
 
     
  aws cloudformation deploy --stack-name=voteapp --template-file=aws/voteapp.yml --capabilities=CAPABILITY_IAM
+    
+    
+    
+    
+    
+MongoDB URL - mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority    
