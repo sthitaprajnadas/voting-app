@@ -116,3 +116,6 @@ $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
 $ docker build -t voteapi .
 $ docker tag voteapi 654814900965.dkr.ecr.us-east-1.amazonaws.com/voteapi
 $ docker push 654814900965.dkr.ecr.us-east-1.amazonaws.com/voteapi
+
+    
+ aws cloudformation deploy --stack-name=voteapp --template-file=aws/voteapp.yml --capabilities=CAPABILITY_IAM
