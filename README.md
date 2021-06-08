@@ -106,22 +106,38 @@ $ aws ecr create-repository \
 
 $ cd $VOTEAPP_ROOT/src/worker
 $ docker build -t worker .
-docker tag worker:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/worker:latest
+
+  docker tag worker:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/worker:latest
+    
 $ docker tag worker:latest 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
 $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
 
     
 # push voteapi image
-    
+$ cd $VOTEAPP_ROOT/src/vote    
 $ docker build -t voteapi .
-$ docker tag voteapi 654814900965.dkr.ecr.us-east-1.amazonaws.com/voteapi
-$ docker push 654814900965.dkr.ecr.us-east-1.amazonaws.com/voteapi
+$ docker tag voteapi 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
+$ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
 
     
  aws cloudformation deploy --stack-name=voteapp --template-file=aws/voteapp.yml --capabilities=CAPABILITY_IAM
     
+ aws cloudformation deploy --stack-name redis --template-file=aws/redis.yml
     
+ aws cloudformation deploy --stack-name worker --template-file=aws/worker.yml --parameter-overrides ServiceName=worker ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest DesiredCount=1 MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"   
+ 
+ aws cloudformation deploy --stack-name voteapi --template-file=aws/voteapi.yml --parameter-overrides ServiceName=voteapi ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi:latest ContainerPort=3000 DesiredCount=1 MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
     
     
     
 MongoDB URL - mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority    
+    
+    
+    
+export VOTEAPI='http://votea-publi-d7ba4g6j14ok-918299899.us-east-1.elb.amazonaws.com/'
+$ cd $VOTEAPP_ROOT/src/voter
+$ docker build -t voter .
+$ alias voter="docker run -it --rm -e VOTE_API_URI=$VOTEAPI voter"
+    
+
+    aws cloudformation delete-stack --stack-name voteapp
