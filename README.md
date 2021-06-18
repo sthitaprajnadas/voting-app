@@ -84,7 +84,9 @@ The Voting App is open source and free for any use in compliance with the terms 
 
 
 
-# Deploying in fargate using Amazon Linux (https://medium.com/containers-on-aws/deploy-the-voting-app-to-aws-ecs-with-fargate-cb75f226408f)
+# SPD
+
+## Deploying in fargate using Amazon Linux (https://medium.com/containers-on-aws/deploy-the-voting-app-to-aws-ecs-with-fargate-cb75f226408f)
 install docker (sudo yum update -y  ,  sudo amazon-linux-extras install docker , sudo service docker start , sudo usermod -a -G docker ec2-user , docker info)
 aws configure
 $(aws ecr get-login --no-include-email --region us-east-1)
