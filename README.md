@@ -89,37 +89,38 @@ The Voting App is open source and free for any use in compliance with the terms 
 ## Deploying in fargate using Amazon Linux (https://medium.com/containers-on-aws/deploy-the-voting-app-to-aws-ecs-with-fargate-cb75f226408f)
 install docker (sudo yum update -y  ,  sudo amazon-linux-extras install docker , sudo service docker start , sudo usermod -a -G docker ec2-user , docker info)
 aws configure
-$(aws ecr get-login --no-include-email --region us-east-1)
 
-$ aws ecr create-repository \
---repository-name worker \
---image-scanning-configuration scanOnPush=true \
---region us-east-1
+    $(aws ecr get-login --no-include-email --region us-east-1)
 
-$ aws ecr create-repository \
---repository-name voteapi \
---image-scanning-configuration scanOnPush=true \
---region us-east-1
+    $ aws ecr create-repository \
+    --repository-name worker \
+    --image-scanning-configuration scanOnPush=true \
+    --region us-east-1
+
+    $ aws ecr create-repository \
+    --repository-name voteapi \
+    --image-scanning-configuration scanOnPush=true \
+    --region us-east-1
 
     
 
 ### push worker image
 - Changed node:9 to node:10.6 in Dockerfile
 
-$ cd $VOTEAPP_ROOT/src/worker
-$ docker build -t worker .
+        $ cd $VOTEAPP_ROOT/src/worker
+        $ docker build -t worker .
 
   docker tag worker:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/worker:latest
     
-$ docker tag worker:latest 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
-$ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
+        $ docker tag worker:latest 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest        
+        $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
 
     
 ### push voteapi image
-$ cd $VOTEAPP_ROOT/src/vote    
-$ docker build -t voteapi .
-$ docker tag voteapi 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
-$ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
+        $ cd $VOTEAPP_ROOT/src/vote    
+        $ docker build -t voteapi .
+        $ docker tag voteapi 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
+        $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
 
     
  aws cloudformation deploy --stack-name=voteapp --template-file=aws/voteapp.yml --capabilities=CAPABILITY_IAM
