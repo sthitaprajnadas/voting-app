@@ -103,7 +103,7 @@ $ aws ecr create-repository \
 
     
 
-# push worker image
+### push worker image
 - Changed node:9 to node:10.6 in Dockerfile
 
 $ cd $VOTEAPP_ROOT/src/worker
@@ -115,7 +115,7 @@ $ docker tag worker:latest 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:l
 $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest
 
     
-# push voteapi image
+### push voteapi image
 $ cd $VOTEAPP_ROOT/src/vote    
 $ docker build -t voteapi .
 $ docker tag voteapi 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
@@ -126,9 +126,12 @@ $ docker push 437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi
     
  aws cloudformation deploy --stack-name redis --template-file=aws/redis.yml
     
- aws cloudformation deploy --stack-name worker --template-file=aws/worker.yml --parameter-overrides ServiceName=worker ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest DesiredCount=1 MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"   
+ aws cloudformation deploy --stack-name worker --template-file=aws/worker.yml --parameter-overrides \
+ ServiceName=worker ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/worker:latest DesiredCount=1 \ MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"   
  
- aws cloudformation deploy --stack-name voteapi --template-file=aws/voteapi.yml --parameter-overrides ServiceName=voteapi ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi:latest ContainerPort=3000 DesiredCount=1 MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+ aws cloudformation deploy --stack-name voteapi --template-file=aws/voteapi.yml --parameter-overrides \
+ ServiceName=voteapi ImageUrl=437637487786.dkr.ecr.us-east-1.amazonaws.com/voteapi:latest ContainerPort=3000 \
+ DesiredCount=1 MongoUri="mongodb+srv://service:Password1@voteapp.gylxj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
     
     
     
@@ -141,5 +144,6 @@ $ cd $VOTEAPP_ROOT/src/voter
 $ docker build -t voter .
 $ alias voter="docker run -it --rm -e VOTE_API_URI=$VOTEAPI voter"
     
-
-    aws cloudformation delete-stack --stack-name voteapp
+    
+### Cleanup
+aws cloudformation delete-stack --stack-name voteapp
